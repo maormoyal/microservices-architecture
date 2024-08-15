@@ -1,0 +1,64 @@
+version: '3.8'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    healthcheck:
+      test: ['CMD', 'rabbitmqctl', 'status']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+  user-service:
+    build: ./user-service
+    ports:
+      - '3001:3001'
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/user-service
+      - RABBITMQ_URL=amqp://user:password@rabbitmq:5672
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+
+  order-service:
+    build: ./order-service
+    ports:
+      - '3002:3002'
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/order-service
+      - RABBITMQ_URL=amqp://user:password@rabbitmq:5672
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - '3003:3003'
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/payment-service
+      - RABBITMQ_URL=amqp://user:password@rabbitmq:5672
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+
+volumes:
+  mongo-data:

@@ -1,0 +1,8 @@
+user-service/node_modules/*
+user-service/package-lock.json
+
+payment-service/node_modules/*
+payment-service/package-lock.json
+
+order-service/node_modules/*
+order-service/package-lock.json
