@@ -26,7 +26,7 @@ const options = {
       schemas: {
         Payment: {
           type: 'object',
-          required: ['orderId', 'amount', 'status'],
+          required: ['orderId', 'amount', 'status', 'paymentMethod'],
           properties: {
             orderId: {
               type: 'string',
@@ -38,14 +38,20 @@ const options = {
             },
             status: {
               type: 'string',
-              enum: ['completed', 'failed', 'refunded'],
+              enum: ['pending', 'completed', 'failed', 'refunded'],
               description: 'The status of the payment',
+            },
+            paymentMethod: {
+              type: 'string',
+              description:
+                'The method used for payment (e.g., credit_card, paypal)',
             },
           },
           example: {
             orderId: '60f7b2a8c9a1f7842fbca380',
             amount: 39.98,
-            status: 'completed',
+            status: 'pending',
+            paymentMethod: 'credit_card',
           },
         },
       },

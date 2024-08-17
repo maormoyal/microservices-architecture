@@ -3,6 +3,7 @@ const {
   processPayment,
   getPaymentById,
   processRefund,
+  completePayment,
 } = require('../controllers/payment.controller');
 const authenticateToken = require('../middlewares/auth.middleware');
 
@@ -19,7 +20,7 @@ const router = express.Router();
  * @swagger
  * /api/payments:
  *   post:
- *     summary: Process a payment
+ *     summary: Process a new payment
  *     tags: [Payments]
  *     security:
  *       - bearerAuth: []
@@ -31,15 +32,33 @@ const router = express.Router();
  *             $ref: '#/components/schemas/Payment'
  *     responses:
  *       201:
- *         description: The payment was successfully processed.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Payment'
+ *         description: The payment was successfully initiated.
  *       400:
  *         description: Bad request. Invalid input.
  */
 router.post('/', authenticateToken, processPayment);
+
+/**
+ * @swagger
+ * /api/payments/complete:
+ *   post:
+ *     summary: Complete an existing payment
+ *     tags: [Payments]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Payment'
+ *     responses:
+ *       200:
+ *         description: The payment was successfully completed.
+ *       404:
+ *         description: Payment not found or already completed.
+ */
+router.post('/complete', authenticateToken, completePayment);
 
 /**
  * @swagger

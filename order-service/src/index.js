@@ -5,16 +5,14 @@ require('dotenv').config();
 const orderRoutes = require('./routes/order.routes');
 const swaggerDocs = require('./swagger/order.swagger');
 const { rabbitMQConnect } = require('./services/rabbitmq.service');
+const { updateOrderStatus } = require('./services/order.service');
 
 const app = express();
 app.use(express.json());
 
 // MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URL)
   .then(() => {
     console.log('Connected to MongoDB');
   })
@@ -23,7 +21,7 @@ mongoose
   });
 
 // RabbitMQ connection
-rabbitMQConnect();
+rabbitMQConnect(updateOrderStatus);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -37,6 +35,6 @@ app.use('/api/orders', orderRoutes);
 swaggerDocs(app);
 
 // Start the server
-app.listen(3002, () => {
-  console.log('Order service running on port 3002');
+app.listen(process.env.PORT || 3002, () => {
+  console.log(`Order service running on port ${process.env.PORT || 3002}`);
 });

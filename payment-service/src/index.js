@@ -4,22 +4,28 @@ require('dotenv').config();
 
 const paymentRoutes = require('./routes/payment.routes');
 const swaggerDocs = require('./swagger/payment.swagger');
+const { rabbitMQConnect } = require('./services/rabbitmq.service');
+const {
+  processPayment,
+  processRefund,
+  completePayment,
+} = require('./services/payment.service');
 
 const app = express();
 app.use(express.json());
 
 // MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URL)
   .then(() => {
     console.log('Connected to MongoDB');
   })
   .catch((err) => {
     console.error('Failed to connect to MongoDB', err);
   });
+
+// RabbitMQ connection
+rabbitMQConnect(processPayment, processRefund, completePayment);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -33,6 +39,6 @@ app.use('/api/payments', paymentRoutes);
 swaggerDocs(app);
 
 // Start the server
-app.listen(3003, () => {
-  console.log('Payment service running on port 3003');
+app.listen(process.env.PORT || 3003, () => {
+  console.log(`Payment service running on port ${process.env.PORT || 3003}`);
 });

@@ -1,45 +1,66 @@
 const amqp = require('amqplib/callback_api');
-const { processPayment, processRefund } = require('./payment.service');
+require('dotenv').config();
 
-function rabbitMQConnect() {
+let channel = null;
+
+function rabbitMQConnect(processPaymentFn, processRefundFn, completePaymentFn) {
   amqp.connect(process.env.RABBITMQ_URL, (err, conn) => {
-    if (err) throw err;
+    if (err) {
+      console.error('Failed to connect to RabbitMQ:', err.message);
+      setTimeout(
+        () =>
+          rabbitMQConnect(processPaymentFn, processRefundFn, completePaymentFn),
+        5000
+      );
+      return;
+    }
     conn.createChannel((err, ch) => {
       if (err) throw err;
-      const orderPlacedQueue = 'order_placed';
-      const orderCancelledQueue = 'order_cancelled';
+      channel = ch;
+      channel.assertQueue('order_placed', { durable: true });
+      channel.assertQueue('order_cancelled', { durable: true });
+      channel.assertQueue('order_completed', { durable: true });
+      console.log('Connected to RabbitMQ');
 
-      ch.assertQueue(orderPlacedQueue, { durable: true });
-      ch.assertQueue(orderCancelledQueue, { durable: true });
-      console.log(
-        'Waiting for messages in %s and %s',
-        orderPlacedQueue,
-        orderCancelledQueue
-      );
-
-      // Listen for the order_placed event
-      ch.consume(orderPlacedQueue, async (msg) => {
+      ch.consume('order_placed', async (msg) => {
         if (msg !== null) {
           const order = JSON.parse(msg.content.toString());
           console.log('Received order placed:', order);
-          await processPayment(order);
-          ch.ack(msg); // Acknowledge that the message has been processed
+          await processPaymentFn(order);
+          ch.ack(msg);
         }
       });
 
-      // Listen for the order_cancelled event
-      ch.consume(orderCancelledQueue, async (msg) => {
+      ch.consume('order_cancelled', async (msg) => {
         if (msg !== null) {
           const order = JSON.parse(msg.content.toString());
           console.log('Received order cancellation:', order);
-          await processRefund(order);
-          ch.ack(msg); // Acknowledge that the message has been processed
+          await processRefundFn(order._id.toString(), order.userId.toString());
+          ch.ack(msg);
+        }
+      });
+
+      ch.consume('order_completed', async (msg) => {
+        if (msg !== null) {
+          const { orderId, userId, paymentStatus } = JSON.parse(
+            msg.content.toString()
+          );
+          console.log('Received order completed:', { orderId, paymentStatus });
+          await completePaymentFn(orderId, userId);
+          ch.ack(msg);
         }
       });
     });
   });
 }
 
+function sendToQueue(queueName, message) {
+  if (channel) {
+    channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)));
+  }
+}
+
 module.exports = {
   rabbitMQConnect,
+  sendToQueue,
 };

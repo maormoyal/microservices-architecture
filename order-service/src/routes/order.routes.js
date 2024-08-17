@@ -4,7 +4,7 @@ const express = require('express');
 const {
   placeOrder,
   cancelOrderById,
-  getOrdersByUser, // Import the new function
+  getOrdersByUser,
 } = require('../controllers/order.controller');
 const authenticateToken = require('../middlewares/auth.middleware');
 

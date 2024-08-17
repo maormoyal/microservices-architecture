@@ -1,4 +1,3 @@
-// order-service/src/controllers/order.controller.js
 const {
   createOrder,
   cancelOrder,
