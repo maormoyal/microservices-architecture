@@ -3,8 +3,9 @@ const {
   register,
   login,
   getProfile,
-} = require('../controllers/auth.controller');
-const authenticateToken = require('../middlewares/auth.middleware');
+  logout,
+} = require('../controllers/user.controller');
+const authenticateToken = require('../middlewares/user.middleware');
 
 const router = express.Router();
 
@@ -118,5 +119,21 @@ router.post('/login', login);
  *         description: Unauthorized
  */
 router.get('/me', authenticateToken, getProfile);
+
+/**
+ * @swagger
+ * /api/users/logout:
+ *   post:
+ *     summary: Logout a user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User successfully logged out
+ *       401:
+ *         description: Unauthorized
+ */
+router.post('/logout', authenticateToken, logout);
 
 module.exports = router;

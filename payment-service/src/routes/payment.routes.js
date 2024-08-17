@@ -18,28 +18,6 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/payments:
- *   post:
- *     summary: Process a new payment
- *     tags: [Payments]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Payment'
- *     responses:
- *       201:
- *         description: The payment was successfully initiated.
- *       400:
- *         description: Bad request. Invalid input.
- */
-router.post('/', authenticateToken, processPayment);
-
-/**
- * @swagger
  * /api/payments/complete:
  *   post:
  *     summary: Complete an existing payment
@@ -51,7 +29,13 @@ router.post('/', authenticateToken, processPayment);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Payment'
+ *             type: object
+ *             properties:
+ *               orderId:
+ *                 type: string
+ *                 description: The ID of the order associated with the payment
+ *             required:
+ *               - orderId
  *     responses:
  *       200:
  *         description: The payment was successfully completed.
@@ -86,32 +70,5 @@ router.post('/complete', authenticateToken, completePayment);
  *         description: Payment not found
  */
 router.get('/:id', authenticateToken, getPaymentById);
-
-/**
- * @swagger
- * /api/payments/{id}/refund:
- *   post:
- *     summary: Process a refund for a payment by ID
- *     tags: [Payments]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The payment ID
- *     responses:
- *       200:
- *         description: The refund was successfully processed.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Payment'
- *       404:
- *         description: Payment not found or already refunded
- */
-router.post('/:id/refund', authenticateToken, processRefund);
 
 module.exports = router;
