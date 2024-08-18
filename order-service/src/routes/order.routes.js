@@ -72,7 +72,7 @@ router.post('/:id/cancel', authenticateToken, cancelOrderById);
 
 /**
  * @swagger
- * /api/orders/user/{userId}:
+ * /api/orders/{userId}:
  *   get:
  *     summary: Get all orders for a specific user
  *     tags: [Orders]
@@ -97,6 +97,6 @@ router.post('/:id/cancel', authenticateToken, cancelOrderById);
  *       404:
  *         description: No orders found for this user
  */
-router.get('/user/:userId', authenticateToken, getOrdersByUser); // New route to get all orders by user
+router.get('/:userId', authenticateToken, getOrdersByUser); // New route to get all orders by user
 
 module.exports = router;

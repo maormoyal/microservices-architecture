@@ -1,6 +1,7 @@
-# Microservices Project
+# PAYMENT - Event-driven microservices system
 
-This project is a microservices-based application that handles user management, orders, and payments. The system is built using Node.js, Express, MongoDB, and RabbitMQ, with Swagger for API documentation.
+This project is a microservices-based application that handles user management, orders, and payments.
+The system is built using Node.js, Express, MongoDB, RabbitMQ and Docker, with Swagger for API documentation.
 
 ## Table of Contents
 
@@ -19,7 +20,7 @@ This project is a microservices-based application that handles user management, 
 
 ## Project Overview
 
-This project is designed as a microservices architecture with separate services for managing users, orders, and payments. The services communicate with each other via RabbitMQ, enabling asynchronous processing of orders and payments.
+This project is a custom event-driven microservices system designed to handle a high volume of transactions. The system is built using Node.js, Express, MongoDB, and RabbitMQ. It consists of three main microservices: User Service, Order Service, and Payment Service. The system is designed to process different types of events and ensure data consistency across multiple services.
 
 ### Features
 
@@ -74,26 +75,36 @@ The Payment Service handles payment processing, updating the status of orders ba
 
 ### Order Service Endpoints
 
-| Endpoint               | Method | Description               | Authentication |
-| ---------------------- | ------ | ------------------------- | -------------- |
-| `/api/orders`          | POST   | Create a new order        | Yes            |
-| `/api/orders/:orderId` | GET    | Get an order by ID        | Yes            |
-| `/api/orders`          | GET    | Get all orders for a user | Yes            |
-| `/api/orders/:orderId` | PATCH  | Update an order's status  | Yes            |
-| `/api/orders/:orderId` | DELETE | Cancel an order           | Yes            |
+| Endpoint                  | Method | Description               | Authentication |
+| ------------------------- | ------ | ------------------------- | -------------- |
+| `/api/orders`             | POST   | Create a new order        | Yes            |
+| `/api/orders/{userId}`    | GET    | Get all orders for a user | Yes            |
+| `/api/orders/{id}/cancel` | POST   | Cancel an order by ID     | Yes            |
 
 ### Payment Service Endpoints
 
-| Endpoint                   | Method | Description               | Authentication |
-| -------------------------- | ------ | ------------------------- | -------------- |
-| `/api/payments`            | POST   | Process a payment         | Yes            |
-| `/api/payments/:paymentId` | GET    | Get payment details by ID | Yes            |
+| Endpoint                 | Method | Description                  | Authentication |
+| ------------------------ | ------ | ---------------------------- | -------------- |
+| `/api/payments/complete` | POST   | Complete an existing payment | Yes            |
+| `/api/payments/{id}`     | GET    | Get payment details by ID    | Yes            |
 
 ## Setup and Installation
 
-### Running all microservices with Docker
+### Set up a local environment with Docker - Run all microservices with Docker
 
-Navigate to the root directory and build the Docker images for each service:
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/maormoyal/microservices-architecture.git
+   cd your-repository
+   ```
+
+2. **Install Docker and Docker compose**
+   Make sure you have Docker installed on your machine. You can download it from Docker's official website.
+   You can just download Docker-Desktop at https://www.docker.com/ (Recommend).
+
+3. **Run docker images**
+   Navigate to the root directory and build and run the Docker images:
 
 ```bash
 npm run "docker:prod"
@@ -110,7 +121,7 @@ Visit http://localhost:<port>/api-docs for each service to view the Swagger docu
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/your-repository.git
+   git clone https://github.com/maormoyal/microservices-architecture.git
    cd your-repository
    ```
 
@@ -132,36 +143,43 @@ cd ../payment-service
 npm install
 ```
 
-3. **Set Up Environment Variables**
+3. **Start MongoDB and RabbitMQ**
 
-Create a .env file in each service's directory based on the .env.example file provided.
+Ensure that MongoDB and RabbitMQ are running locally with Docker.
+navigate to the root folder and run:
 
-4. **Start MongoDB and RabbitMQ**
+```bash
+npm run docker:dev
+```
 
-Ensure that MongoDB and RabbitMQ are running locally.
+4. **Start the Services**
+   Start all microservices parallel:
+   navigate to the root folder and run:
 
-5. **Start the Services**
+```bash
+npm run dev:services
+```
 
 For each microservice, start the server:
 
 ```bash
 cd user-service
-npm start
+npm run dev
 ```
 
 ```bash
 cd ../order-service
-npm start
+npm run dev
 ```
 
 ```bash
 cd ../payment-service
-npm start
+npm run dev
 ```
 
 The services will be available on ports 3001, 3002, and 3003, respectively.
 
-6. **Access the API Documentation**
+5. **Access the API Documentation**
 
 Visit http://localhost:<port>/api-docs for each service to view the Swagger documentation.
 
