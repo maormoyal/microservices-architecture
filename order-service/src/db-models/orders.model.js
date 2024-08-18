@@ -11,13 +11,19 @@ const orderSchema = new mongoose.Schema(
       },
     ],
     totalAmount: { type: Number, required: true },
-    status: { type: String, enum: ['placed', 'cancelled'], default: 'placed' },
+    status: {
+      type: String,
+      enum: ['placed', 'completed', 'cancelled'],
+      default: 'placed',
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['pending', 'paid', 'failed', 'refunded'],
+      default: 'pending',
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 const Order = mongoose.model('Order', orderSchema);
-
 module.exports = Order;
