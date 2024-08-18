@@ -13,8 +13,8 @@ The system is built using Node.js, Express, MongoDB, RabbitMQ and Docker, with S
   - [Payment Service](#payment-service)
 - [API Documentation](#api-documentation)
 - [Setup and Installation](#setup-and-installation)
-  - [Running Locally](#running-locally)
   - [Running with Docker](#running-with-docker)
+  - [Running Locally](#running-locally)
 - [Environment Variables](#environment-variables)
 - [License](#license)
 
@@ -90,7 +90,9 @@ The Payment Service handles payment processing, updating the status of orders ba
 
 ## Setup and Installation
 
-### Set up a local environment with Docker - Run all microservices with Docker
+### running-with-docker
+
+**Set up a local environment with Docker - Run all microservices with Docker**
 
 1. **Clone the Repository**
 
