@@ -13,7 +13,7 @@ The system is built using Node.js, Express, MongoDB, RabbitMQ and Docker, with S
   - [Payment Service](#payment-service)
 - [API Documentation](#api-documentation)
 - [Setup and Installation](#setup-and-installation)
-  - [Running with Docker](#running-with-docker)
+  - [Running Locally with Docker](#running-with-docker)
   - [Running Locally](#running-locally)
 - [Environment Variables](#environment-variables)
 - [License](#license)
@@ -145,7 +145,7 @@ cd ../payment-service
 npm install
 ```
 
-3. **Start MongoDB and RabbitMQ**
+3. **Start MongoDB and RabbitMQ:**
 
 Ensure that MongoDB and RabbitMQ are running locally with Docker.
 navigate to the root folder and run:
