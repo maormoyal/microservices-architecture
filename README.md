@@ -90,7 +90,7 @@ The Payment Service handles payment processing, updating the status of orders ba
 
 ## Setup and Installation
 
-### running-with-docker
+### running-with-docker - Locally
 
 **Set up a local environment with Docker - Run all microservices with Docker**
 
@@ -101,11 +101,11 @@ The Payment Service handles payment processing, updating the status of orders ba
    cd your-repository
    ```
 
-2. **Install Docker and Docker compose**
+2. **Install Docker and Docker compose:**  
    Make sure you have Docker installed on your machine. You can download it from Docker's official website.
    You can just download Docker-Desktop at https://www.docker.com/ (Recommend).
 
-3. **Run docker images**
+3. **Run docker images:**  
    Navigate to the root directory and build and run the Docker images:
 
 ```bash
@@ -120,14 +120,14 @@ Visit http://localhost:<port>/api-docs for each service to view the Swagger docu
 
 ### Running Locally
 
-1. **Clone the Repository**
+1. **Clone the Repository:**
 
    ```bash
    git clone https://github.com/maormoyal/microservices-architecture.git
    cd your-repository
    ```
 
-2. **Install Dependencies**  
+2. **Install Dependencies:**  
    For each microservice, navigate to its directory and install the dependencies:
 
 ```bash
